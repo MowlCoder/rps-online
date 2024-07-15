@@ -12,7 +12,7 @@ import (
 var messageHandlerRegister = network.NewMessageHandlerRegister()
 
 func main() {
-	listener, err := net.Listen("tcp", "localhost:9090")
+	listener, err := net.Listen("tcp", ":9090")
 
 	if err != nil {
 		panic(err)
