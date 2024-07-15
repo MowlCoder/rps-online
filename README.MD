@@ -1,5 +1,5 @@
 <div align="center">
-  <h3 align="center">🪨 📄 ✂️</h3>
+  <h3 align="center"><img src="./cmd/client/frontend/src/assets/images/rock.png" width=32> <img src="./cmd/client/frontend/src/assets/images/paper.png" width=32> <img src="./cmd/client/frontend/src/assets/images/scissors.png" width=32></h3>
   <h3 align="center">Rock Paper Scissors Online</h3>
   <p align="center">
     A simple game where you can compete in duels with your friends.
@@ -19,11 +19,11 @@ To build manually, you need to have Go 1.22 and [Wails](https://github.com/wails
 ### Build&Run server
 
 ```sh
-  make server
+make server
 ```
 
 ### Build&Run client
 
 ```sh
-  make client
+make client
 ```
