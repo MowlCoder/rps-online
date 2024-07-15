@@ -6,6 +6,11 @@ import { useMatchStore } from "../stores/match.store";
 import { useUserStore } from "../stores/user.store";
 import { useRouter } from "vue-router";
 
+import noneImage from "../assets/images/none.png";
+import rockImage from "../assets/images/rock.png";
+import paperImage from "../assets/images/paper.png";
+import scissorsImage from "../assets/images/scissors.png";
+
 const actionTextMap = {
   0: "Waiting for opponent...",
   1: "Make your turn!",
@@ -13,10 +18,10 @@ const actionTextMap = {
 };
 
 const choiceMap = {
-  0: "❔",
-  1: "🪨",
-  2: "📄",
-  3: "✂️",
+  0: noneImage,
+  1: rockImage,
+  2: paperImage,
+  3: scissorsImage,
 };
 
 const matchResultMap = {
@@ -29,8 +34,8 @@ const router = useRouter();
 
 const alreadyMadeChoice = ref(false);
 const matchResult = ref(null);
-const creatorChoice = ref("❔");
-const opponentChoice = ref("❔");
+const creatorChoice = ref(noneImage);
+const opponentChoice = ref(noneImage);
 
 const userStore = useUserStore();
 const matchStore = useMatchStore();
@@ -86,7 +91,9 @@ EventsOn("server:match_end", (payload) => {
         >
           {{ matchStore.room.Creator.Username }}
         </p>
-        <div class="selected">{{ creatorChoice }}</div>
+        <div class="selected">
+          <img :src="creatorChoice" alt="" />
+        </div>
       </div>
       <div class="center">
         <p>vs</p>
@@ -102,7 +109,9 @@ EventsOn("server:match_end", (payload) => {
           {{ matchStore.room.Opponent.Username }}
         </p>
         <p v-else>❔❔❔</p>
-        <div class="selected">{{ opponentChoice }}</div>
+        <div class="selected">
+          <img :src="opponentChoice" alt="" />
+        </div>
       </div>
     </div>
     <div class="control-zone">
@@ -111,9 +120,15 @@ EventsOn("server:match_end", (payload) => {
         class="control-zone__panel"
         :class="{ disabled: matchStore.room.Status !== 1 || alreadyMadeChoice }"
       >
-        <p @click="makeChoice(1)">🪨</p>
-        <p @click="makeChoice(2)">📄</p>
-        <p @click="makeChoice(3)">✂️</p>
+        <p @click="makeChoice(1)">
+          <img :src="rockImage" alt="rock" />
+        </p>
+        <p @click="makeChoice(2)">
+          <img :src="paperImage" alt="paper" />
+        </p>
+        <p @click="makeChoice(3)">
+          <img :src="scissorsImage" alt="scissors" />
+        </p>
       </div>
       <div v-else>
         <button class="button" @click="goToHub">Go to Hub</button>
@@ -185,6 +200,11 @@ EventsOn("server:match_end", (payload) => {
   font-size: 100px;
 }
 
+.match-zone .selected img {
+  width: 100px;
+  height: 100px;
+}
+
 .control-zone {
   display: flex;
   justify-content: center;
@@ -216,5 +236,10 @@ EventsOn("server:match_end", (payload) => {
 
 .control-zone__panel:not(.disabled) p:hover {
   background-color: #433d8b;
+}
+
+.control-zone__panel p img {
+  width: 64px;
+  height: 64px;
 }
 </style>

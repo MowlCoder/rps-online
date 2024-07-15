@@ -29,7 +29,14 @@ EventsOn("server:success_login", (payload) => {
 
 <template>
   <div class="page-wrapper">
-    <h1>🪨 📄 ✂️ Online</h1>
+    <h1>
+      <span>
+        <img src="../assets/images/rock.png" />
+        <img src="../assets/images/paper.png" />
+        <img src="../assets/images/scissors.png" />
+      </span>
+      Online
+    </h1>
     <form class="form" @submit.prevent="onSubmit">
       <input
         class="input"
@@ -50,6 +57,16 @@ EventsOn("server:success_login", (payload) => {
   align-items: center;
   justify-content: center;
   gap: 25px;
+}
+
+.page-wrapper h1 span {
+  display: inline-flex;
+  gap: 5px;
+}
+
+.page-wrapper h1 img {
+  width: 30px;
+  height: 30px;
 }
 
 .form {
