@@ -25,7 +25,7 @@ func NewApp() *App {
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 
-	conn, err := net.Dial("tcp", "103.106.2.201:9090")
+	conn, err := net.Dial("tcp", ":9090")
 	if err != nil {
 		return
 	}
