@@ -90,7 +90,13 @@ func (m *Message) Encode() []byte {
 	binary.Write(bin_buf, binary.BigEndian, m.EventType)
 	binary.Write(bin_buf, binary.BigEndian, m.Payload)
 
-	return bin_buf.Bytes()
+	messageBytes := bin_buf.Bytes()
+	messageLength := uint32(len(messageBytes))
+
+	bin_buf = new(bytes.Buffer)
+	binary.Write(bin_buf, binary.BigEndian, messageLength)
+
+	return append(bin_buf.Bytes(), messageBytes...)
 }
 
 func (m *Message) Decode(b []byte) {

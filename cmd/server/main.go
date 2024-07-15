@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/binary"
 	"fmt"
 	"net"
 
@@ -50,17 +52,27 @@ func handleUserConnection(c net.Conn, handler *handlers.Handler) {
 
 	handler.HandleUserConnect(connectedClient)
 
-	tmp := make([]byte, 2048)
+	messageSizeBuffer := make([]byte, 4)
 
 	for {
-		bytesRead, err := c.Read(tmp)
+		_, err := c.Read(messageSizeBuffer)
+
+		if err != nil {
+			return
+		}
+
+		var messageSize uint32
+		binary.Read(bytes.NewBuffer(messageSizeBuffer), binary.BigEndian, &messageSize)
+
+		messageBuffer := make([]byte, messageSize)
+		_, err = c.Read(messageBuffer)
 
 		if err != nil {
 			return
 		}
 
 		message := &network.Message{}
-		message.Decode(tmp[:bytesRead])
+		message.Decode(messageBuffer)
 
 		handler, ok := messageHandlerRegister.GetHandler(message.EventType)
 		if !ok {

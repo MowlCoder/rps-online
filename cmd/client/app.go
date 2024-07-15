@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"context"
+	"encoding/binary"
 	"encoding/json"
 	"io"
 	"net"
@@ -71,10 +73,11 @@ func (a *App) MakeChoice(choice uint8) {
 }
 
 func (a *App) socketListener() {
-	tmp := make([]byte, 2048)
+	messageSizeBuffer := make([]byte, 4)
 
 	for {
-		bytesRead, err := a.socketConn.Read(tmp)
+		_, err := a.socketConn.Read(messageSizeBuffer)
+
 		if err != nil {
 			if err == io.EOF {
 				runtime.EventsEmit(a.ctx, "server:no_connection")
@@ -82,8 +85,23 @@ func (a *App) socketListener() {
 
 			return
 		}
+
+		var messageSize uint32
+		binary.Read(bytes.NewBuffer(messageSizeBuffer), binary.BigEndian, &messageSize)
+
+		messageBuffer := make([]byte, messageSize)
+		_, err = a.socketConn.Read(messageBuffer)
+
+		if err != nil {
+			if err == io.EOF {
+				runtime.EventsEmit(a.ctx, "server:no_connection")
+			}
+
+			return
+		}
+
 		msg := &network.Message{}
-		msg.Decode(tmp[:bytesRead])
+		msg.Decode(messageBuffer)
 
 		switch msg.EventType {
 		case network.CONNECT_SERVER_EVENT:
